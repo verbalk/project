@@ -14,7 +14,7 @@ export const MovieItem = ({ title, contents, src }) => {
       alignItems="center"
       flexDirection="column"
     >
-      <img src={src} alt="영화썸네일"></img>
+      <img width="200px" src={src} alt="영화썸네일"></img>
       <Text>{title}</Text>
       <Text size={300}>{contents}</Text>
     </Pane>

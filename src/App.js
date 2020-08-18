@@ -1,11 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 import styled from 'styled-components';
-import { Pane, Button, Heading, Text, Select } from 'evergreen-ui';
+import { Pane, Heading, Select } from 'evergreen-ui';
 import { MovieItem } from './MovieItem';
+import axios from 'axios';
 
 function App() {
-  const [movies, setMovies] = useState([]);
+  const [movieItems, setMovieItems] = useState(null);
+  const getMovieInfo = async () => {
+    const response = await axios.get('https://yts.mx/api/v2/list_movies.json');
+    setMovieItems(response.data.data.movies);
+  };
+
+  useEffect(() => {
+    getMovieInfo();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const [genres] = useState(['장르별', '스릴러', '공포', '드라마', '코미디']);
   const [selectedGenres, setSelectedGenres] = useState('장르별');
 
@@ -28,13 +39,17 @@ function App() {
           </Select>
         </Pane>
       </Pane>
-      {movies.map((movieItem) => {
-        return <MovieItem title="awef" contents="awef" src="awjefio" />;
-      })}
-
-      <MovieItem title="다만악에서구하소서" contents="공포" src="hello.png" />
-      <MovieItem title="다만악에서구하소서" contents="공포" src="hello.png" />
-      <MovieItem title="다만악에서구하소서" contents="공포" src="hello.png" />
+      {movieItems &&
+        movieItems.map((movieItem) => {
+          return (
+            <MovieItem
+              key={movieItem.id}
+              title={movieItem.title}
+              contents={movieItem.summary}
+              src={movieItem.background_image}
+            />
+          );
+        })}
     </Pane>
   );
 }
