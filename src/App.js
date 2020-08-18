@@ -8,7 +8,9 @@ import axios from 'axios';
 function App() {
   const [movieItems, setMovieItems] = useState(null);
   const getMovieInfo = async () => {
-    const response = await axios.get('https://yts.mx/api/v2/list_movies.json');
+    const response = await axios.get(
+      'https://yts.mx/api/v2/list_movies.json?sort_by=rating'
+    );
     setMovieItems(response.data.data.movies);
   };
 
@@ -24,7 +26,7 @@ function App() {
     <Pane clearfix>
       <Pane display="flex" padding={16} background="tint2" borderRadius={3}>
         <Pane flex={1} alignItems="center" display="flex">
-          <Heading size={600}>영화 추천 리스트</Heading>
+          <Heading size={400}>영화 추천 리스트</Heading>
         </Pane>
         <Pane>
           <Select
@@ -45,8 +47,8 @@ function App() {
             <MovieItem
               key={movieItem.id}
               title={movieItem.title}
-              contents={movieItem.summary}
-              src={movieItem.background_image}
+              contents={movieItem.synopsis}
+              src={movieItem.medium_cover_image}
             />
           );
         })}
