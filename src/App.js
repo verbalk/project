@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
+import Search from 'react-search';
 import styled from 'styled-components';
 import Component from '@reactions/component';
 import {
@@ -15,11 +16,22 @@ import axios from 'axios';
 
 function App() {
   const [movieItems, setMovieItems] = useState(null);
+  const [text, setText] = useState('');
   const getMovieInfo = async () => {
     const response = await axios.get(
       'https://yts.mx/api/v2/list_movies.json?sort_by=rating'
     );
     setMovieItems(response.data.data.movies);
+  };
+
+  const submit = () => {
+    setMovieItems.filter((movies) => movies.title == setText);
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      submit();
+    }
   };
 
   useEffect(() => {
@@ -41,7 +53,13 @@ function App() {
           </Pane>
 
           <Pane>
-            <SearchInput placeholder="Search..." />
+            <SearchInput
+              onKeyPress={handleKeyPress}
+              value={text}
+              onChange={(e) => {
+                setText(e.target.value);
+              }}
+            />
 
             <Component
               initialState={{
@@ -110,52 +128,6 @@ function App() {
         </Pane>
       </Top>
       <Row>
-        <ContainerLeft>
-          <Menuwidth>
-            <Menu>
-              <Component
-                initialState={{
-                  selected: 'All',
-                }}
-              >
-                {({ state, setState }) => {
-                  return (
-                    <Menu.OptionsGroup
-                      title="Show"
-                      options={[
-                        { label: 'Drama', value: 'Drama' },
-                        { label: 'Comedy', value: 'Comedy' },
-                        { label: 'Mystery', value: 'Mystery' },
-                      ]}
-                      selected={state.selected}
-                      onChange={(selected) => setState({ selected })}
-                    />
-                  );
-                }}
-              </Component>
-              <Menu.Divider />
-              <Component
-                initialState={{
-                  selected: 'Country',
-                }}
-              >
-                {({ state, setState }) => {
-                  return (
-                    <Menu.OptionsGroup
-                      title="Show"
-                      options={[
-                        { label: 'LiveChat', value: 'LiveChat' },
-                        { label: 'ConnectUs', value: 'ConnectUs' },
-                      ]}
-                      selected={state.selected}
-                      onChange={(selected) => setState({ selected })}
-                    />
-                  );
-                }}
-              </Component>
-            </Menu>
-          </Menuwidth>
-        </ContainerLeft>
         <ContainerRight>
           {movieItems &&
             movieItems
