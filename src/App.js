@@ -11,8 +11,9 @@ import {
   Menu,
   SearchInput,
 } from 'evergreen-ui';
-import { MovieItem } from './MovieItem';
+import { Route } from 'react-router-dom';
 import axios from 'axios';
+import { MovieList } from './MovieList';
 
 function App() {
   const [movieItems, setMovieItems] = useState(null);
@@ -25,13 +26,7 @@ function App() {
   };
 
   const submit = () => {
-    setMovieItems.filter((movies) => movies.title == setText);
-  };
-
-  const handleKeyPress = (e) => {
-    if (e.key === 'Enter') {
-      submit();
-    }
+    setMovieItems(movieItems.filter((movies) => movies.title === text));
   };
 
   useEffect(() => {
@@ -54,7 +49,6 @@ function App() {
 
           <Pane>
             <SearchInput
-              onKeyPress={handleKeyPress}
               value={text}
               onChange={(e) => {
                 setText(e.target.value);
@@ -127,35 +121,12 @@ function App() {
           </Pane>
         </Pane>
       </Top>
-      <Row>
-        <ContainerRight>
-          {movieItems &&
-            movieItems
-              .filter((movieItem) => {
-                if (genres.length === 0) {
-                  return true;
-                }
-
-                if (
-                  movieItem.genres.filter((val) => genres.indexOf(val) !== -1)
-                    .length === 0
-                ) {
-                  return false;
-                }
-                return true;
-              })
-              .map((movieItem) => {
-                return (
-                  <MovieItem
-                    key={movieItem.id}
-                    title={movieItem.title}
-                    contents={movieItem.rating}
-                    src={movieItem.medium_cover_image}
-                  />
-                );
-              })}
-        </ContainerRight>
-      </Row>
+      <Route path="/:movieName" exact>
+        {/* <MovieList movieItems={movieItems} text={text} genres={genres} /> */}
+      </Route>
+      <Route path="/" exact>
+        <MovieList movieItems={movieItems} text={text} genres={genres} />
+      </Route>
     </Pane>
   );
 }
